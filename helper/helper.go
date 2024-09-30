@@ -1,24 +1,63 @@
 package helper
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"os"
+	"os/user"
+	"time"
 )
 
-type task struct {
+type Task struct {
+	Id          int       `json:"id"`
+	Description string    `json:"description"`
+	Status      string    `json:"status"`
+	CreatedAt   time.Time `json:"CreatedAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
-func CreateTaskFile(filePath string) error {
-	fmt.Println("Creating file on the system")
-	_, err := os.Create(filePath)
+func fileLocation() string {
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatal(err)
+	}
+	user, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
+	taskfilename := "task-" + user.Username + ".json"
+	filePath := dirname + "/" + taskfilename
+
+	return filePath
+}
+
+func CreateTaskFile() error {
+	//Getting all variables from the system
+	filepath := fileLocation()
+	taskList := []Task{}
+	jtaskList, _ := json.MarshalIndent(taskList, "", " ")
+	msg := fmt.Sprintf("Creating file on the system at %s", filepath)
+	fmt.Println(msg)
+	f, err := os.Create(filepath)
 
 	if err != nil {
+		return err
+	}
+	defer f.Close() // Close the file
+	fmt.Println("Initializing the document")
+	err = os.WriteFile(filepath, jtaskList, 0644)
+	if err != nil {
+		fmt.Println("Error writing Json data to the file")
 		return err
 	}
 	return nil
 }
 
-func TestTaskFile(filePath string) (bool, error) {
+func TestTaskFile() (bool, error) {
+
+	filePath := fileLocation()
+
 	info, err := os.Stat(filePath)
 	if os.IsNotExist(err) {
 		return false, nil
@@ -39,4 +78,19 @@ func TestTaskFile(filePath string) (bool, error) {
 
 	return true, nil
 
+}
+
+func GetTaskFileContent() ([]Task, error) {
+	filepath := fileLocation()
+	var taskList []Task
+	data, err := os.ReadFile(filepath)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal([]byte(data), &taskList)
+
+	if err != nil {
+		return nil, err
+	}
+	return taskList, nil
 }
