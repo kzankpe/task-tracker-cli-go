@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/kzankpe/task-tracker-cli-go/helper"
 	"github.com/spf13/cobra"
@@ -17,17 +18,30 @@ var addCmd = &cobra.Command{
 	Long:  `Add Task to the list. New task will be saved in the json file`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("add called")
-		fmt.Println("Checking task file and create one if need")
-		isExist, err := helper.TestTaskFile("vkf")
+		isExist, err := helper.TestTaskFile()
 		if err != nil {
 			fmt.Println(err)
 		}
 		if !isExist {
 			fmt.Println("File does not exist on the system")
-			helper.CreateTaskFile("fdfd")
+			helper.CreateTaskFile()
 		}
 
+		// Getting element from the current file
+		taskList, err := helper.GetTaskFileContent()
+		size := len(taskList) + 1
 		fmt.Println("Opening file to add new task")
+		//Adding new task to the file
+		newtask := helper.Task{
+			Id:          size,
+			Description: "Test value",
+			Status:      "todo",
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+		}
+
+		taskList = append(taskList, newtask)
+		//Save the information into the task file
 
 	},
 }
