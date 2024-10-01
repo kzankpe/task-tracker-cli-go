@@ -15,7 +15,7 @@ var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all the tasks",
 	Long: `List all the tasks present in the file regardless the status.
-		   The command display the task id, description and status.`,
+		   The command display the task id, description for each task in the file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("list called")
 		isExist, err := helper.TestTaskFile()
