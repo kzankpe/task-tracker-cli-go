@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -16,6 +17,7 @@ var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add New task to the list",
 	Long:  `Add Task to the list. New task will be saved in the json file`,
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("add called")
 		isExist, err := helper.TestTaskFile()
@@ -28,20 +30,26 @@ var addCmd = &cobra.Command{
 		}
 
 		// Getting element from the current file
-		taskList, err := helper.GetTaskFileContent()
+		taskList, _ := helper.GetTaskFileContent()
 		size := len(taskList) + 1
 		fmt.Println("Opening file to add new task")
 		//Adding new task to the file
 		newtask := helper.Task{
 			Id:          size,
-			Description: "Test value",
+			Description: args[0],
 			Status:      "todo",
 			CreatedAt:   time.Now(),
 			UpdatedAt:   time.Now(),
 		}
 
 		taskList = append(taskList, newtask)
+		jtaskList, _ := json.MarshalIndent(taskList, "", " ")
 		//Save the information into the task file
+		err = helper.SaveTaskfile(jtaskList)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Printf("Task added successfully (ID: %d)\n", size)
 
 	},
 }

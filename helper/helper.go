@@ -94,3 +94,12 @@ func GetTaskFileContent() ([]Task, error) {
 	}
 	return taskList, nil
 }
+
+func SaveTaskfile(tasklist []byte) error {
+	filepath := fileLocation()
+	err := os.WriteFile(filepath, tasklist, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
