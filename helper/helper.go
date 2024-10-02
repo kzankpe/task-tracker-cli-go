@@ -103,3 +103,14 @@ func SaveTaskfile(tasklist []byte) error {
 	}
 	return nil
 }
+
+
+func RemoveTask(tasks []Task, id int) []Task{
+	for i, task := range tasks {
+        if task.Id == id {
+            tasks = append(tasks[:i], tasks[i+1:]...)
+            break
+        }
+    }
+    return tasks
+}
