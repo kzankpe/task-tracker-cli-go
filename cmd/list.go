@@ -18,6 +18,7 @@ var listCmd = &cobra.Command{
 		   The command display the task id, description for each task in the file.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("list called")
+		words := [3]string{"todo", "in-progress", "done"}
 		isExist, err := helper.TestTaskFile()
 		if err != nil {
 			fmt.Println(err)
@@ -26,11 +27,30 @@ var listCmd = &cobra.Command{
 			fmt.Println("No task present at this moment. Please add a task...")
 			return
 		}
-		// Getting element from the current file
 		taskList, _ := helper.GetTaskFileContent()
-		for _, item := range taskList {
+		size := len(taskList)
+		if size == 0 {
+			fmt.Println("No Task in the file...")
+		}
+		// Getting element from the current file without argument. We list all tasks from the file
+		if len(args) == 0 {
+			for _, item := range taskList {
 
-			fmt.Printf("%d %s\n", item.Id, item.Description)
+				fmt.Printf("%d %s\n", item.Id, item.Description)
+
+			}
+			return
+		}
+		if len(args) == 1 && helper.Contains(words, args[0]) {
+
+			display := fmt.Sprintf("Listing Task by status %s", args[0])
+			fmt.Println(display)
+			for _, item := range taskList {
+				if item.Status == args[0] {
+					fmt.Printf("%d %s\n", item.Id, item.Description)
+				}
+
+			}
 
 		}
 
