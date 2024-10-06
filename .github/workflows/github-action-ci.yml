@@ -1,7 +1,7 @@
 # This workflow will build a golang project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
-name: Go
+name: Go-CLI-Build
 
 on:
   push:
@@ -10,6 +10,29 @@ on:
     branches: [ "main" ]
 
 jobs:
+  version:
+    runs-on: ubuntu-latest
+
+    steps:
+        - uses: actions/checkout@v3
+          name: Checkout
+          with:
+            fetch-depth: 0
+        - uses: gittools/actions/gitversion/setup@v0
+          name: Install Giversion 5.x
+          with:
+            versionSpec: '5.x'
+        - uses: gittools/actions/gitversion/execute@v0
+          id: get_version
+          name: Determine Version
+          with:
+            useConfigFile: true
+            configFilePath: '.gitversion'
+        - name: Create Tag
+          if: github.event.pull_request.merged == true
+          run: |
+            git tag -a ${{ steps.get_version.outputs.semver }} -m "Created tag for merged pull request"
+            git push origin ${{ steps.get_version.outputs.semver }}
 
   build:
     runs-on: ubuntu-latest
