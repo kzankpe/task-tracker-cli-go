@@ -47,4 +47,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
         WITH_V: true
         DRY_RUN: true
-        CUSTOM_TAG : $env:semVer
+        CUSTOM_TAG : ${{env.semVer}}
