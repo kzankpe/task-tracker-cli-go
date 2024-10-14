@@ -52,7 +52,7 @@ jobs:
       run: go build -o task-cli
     - name: Display current version
       run: |
-        echo "Version env: $env:semVer"
+        echo "Version env: ${{env.semVer}}"
         echo "Version local: ${{ needs.version.outputs.semVer }}"
     #- name: Test
     #  run: go test -v ./...
