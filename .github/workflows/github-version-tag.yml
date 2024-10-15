@@ -10,8 +10,10 @@ jobs:
   version:
     runs-on: ubuntu-latest
     outputs:
-      fullsemver: ${{ steps.get_version.outputs.fullSemVer }}
       semVer: ${{ steps.get_version.outputs.MajorMinorPatch }}
+      major: ${{ steps.get_version.outputs.Major }}
+      minor: ${{ steps.get_version.outputs.Minor }}
+      patch: ${{ steps.get_version.outputs.Patch}}
     steps:
         - uses: actions/checkout@v4
           name: Checkout
@@ -35,6 +37,9 @@ jobs:
       contents: write
     env:
       semVer: ${{ needs.version.outputs.semVer }}
+      major: ${{ needs.version.outputs.major }}
+      minor: ${{ needs.version.outputs.minor }}
+      patch: ${{ needs.version.outputs.patch }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -47,4 +52,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
         WITH_V: true
         DRY_RUN: true
-        CUSTOM_TAG : ${{env.semVer}}
+        MAJOR_STRING_TOKEN: ${{ env.major }}
+        MINOR_STRING_TOKEN: ${{ env.minor }}
+        PATCH_STRING_TOKEN: ${{ env.patch }}
