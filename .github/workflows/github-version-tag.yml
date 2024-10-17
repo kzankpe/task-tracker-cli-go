@@ -48,7 +48,7 @@ jobs:
 
     - name: Bump version and push tag
       uses: laputansoft/github-tag-action@v4.6 
-      env:
+      with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
         tag: ${{ env.semVer }}
         DRY_RUN: true
