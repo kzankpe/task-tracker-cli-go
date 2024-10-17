@@ -31,7 +31,6 @@ jobs:
             useConfigFile: true
             configFilePath: '.gitversion'
   tagging:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     needs: version
     permissions:
